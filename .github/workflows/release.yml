@@ -1,0 +1,58 @@
+name: Release Binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Get Go version from go.mod
+        id: get-go-version
+        run: |
+          echo "GO_VERSION=$(grep '^go ' go.mod | awk '{print $2}')" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+        
+      - name: Get Repository Name
+        id: get-repo-name
+        run: |
+          echo "APP_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Build for Linux
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o ${{ env.APP_NAME }}-linux-amd64 main.go
+          GOOS=linux GOARCH=386 go build -o ${{ env.APP_NAME }}-linux-386 main.go
+
+      - name: Build for Windows
+        run: |
+          GOOS=windows GOARCH=amd64 go build -o ${{ env.APP_NAME }}-windows-amd64.exe main.go
+          GOOS=windows GOARCH=386 go build -o ${{ env.APP_NAME }}-windows-386.exe main.go
+
+      - name: Build for macOS
+        run: |
+          GOOS=darwin GOARCH=amd64 go build -o ${{ env.APP_NAME }}-darwin-amd64 main.go
+      
+      - name: Upload Binaries
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            ./${{ env.APP_NAME }}-linux-amd64
+            ./${{ env.APP_NAME }}-linux-386
+            ./${{ env.APP_NAME }}-windows-amd64.exe
+            ./${{ env.APP_NAME }}-windows-386.exe
+            ./${{ env.APP_NAME }}-darwin-amd64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
