@@ -21,7 +21,7 @@ var (
 )
 
 var versionCmd = &cobra.Command{
-	Use: "version",
+	Use:   "version",
 	Short: "Print the version number of lazycommit",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("Version: %d.%d.%d\n", version.Major, version.Minor, version.Patch)
