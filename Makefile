@@ -1,7 +1,6 @@
 GO ?= go
 EXEC := $(shell basename $(CURDIR))
 GOFILES := $(shell find . -name "*.go" -type f)
-MAIN_PKG := ./cmd
 
 all: lint test run
 
@@ -14,7 +13,7 @@ test: $(GOFILES)
 	$(GO) test -v ./...
 
 build: $(GOFILES)
-	$(GO) build -o $(EXEC) $(MAIN_PKG)
+	$(GO) build -o $(EXEC) .
 
 run: build
 	chmod +x ./$(EXEC); ./$(EXEC)
