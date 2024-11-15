@@ -2,29 +2,36 @@ package cmd
 
 import (
 	"fmt"
+	"os/exec"
+	"strings"
+
 	"github.com/spf13/cobra"
 )
 
-type Version struct {
-	Major int
-	Minor int
-	Patch int
+func GetTag() string {
+	out, err := exec.Command("git", "describe", "--tags").Output()
+	if err != nil {
+		return "unknown"
+	}
+	tag := strings.TrimSpace(string(out))
+	return tag
 }
 
-type Commit struct {
-	Hash string
+func GetCommitHash() string {
+	out, err := exec.Command("git", "rev-parse", "--short", "HEAD").Output()
+	if err != nil {
+		return "unknown"
+	}
+	commitHash := strings.TrimSpace(string(out))
+	return commitHash
 }
-
-var (
-	version Version
-	commit  Commit
-)
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number of lazycommit",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Version: %d.%d.%d\n", version.Major, version.Minor, version.Patch)
-		fmt.Printf("Commit: %s\n", commit.Hash)
+		tag := GetTag()
+		commitHash := GetCommitHash()
+		fmt.Printf("lazycommit v%s (%s)\n", tag, commitHash)
 	},
 }
