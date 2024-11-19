@@ -1,6 +1,7 @@
 ## Lazycommit Documentation
 
-This site contains auto-generated API documentation for lazycommit (and dependencies which are not outsourced). Documentation here is regenerated for every release.
+This site contains auto-generated API documentation for lazycommit (and dependencies which are not outsourced). <br>
+Documentation here is regenerated for every release.
 
 This site can be accessed via **undefined atm**.
 
