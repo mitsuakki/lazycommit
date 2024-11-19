@@ -11,7 +11,7 @@ import (
 func GetTag() string {
 	out, err := exec.Command("git", "describe", "--tags").Output()
 	if err != nil {
-		return "unknown"
+		return "??"
 	}
 	tag := strings.TrimSpace(string(out))
 	return tag
