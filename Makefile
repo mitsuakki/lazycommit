@@ -1,25 +1,25 @@
-GO ?= go
+GO ?= /usr/local/go/bin/go
 EXEC := $(shell basename $(CURDIR))
 GOFILES := $(shell find . -name "*.go" -type f)
 
-all: lint test run
+all: lint test build
 
 lint: $(GOFILES)
 	$(GO) fmt ./...
 	$(GO) vet ./...
-#   $(GO) golangci-lint run
 
 test: $(GOFILES)
 	$(GO) test -v ./...
 
 build: $(GOFILES)
-	$(GO) build -o $(EXEC) .
+	$(GO) mod tidy
+	$(GO) mod download
+
+	mkdir -p bin
+	$(GO) build -o bin/$(EXEC) .
 
 docs: $(GOFILES)
-	doxygen -g doxygen/Doxyfile
-
-run: build
-	chmod +x ./$(EXEC); ./$(EXEC)
+	doxygen doxygen/doxygen.conf
 
 clean:
-	rm -f $(EXEC)
+	rm -f bin/
