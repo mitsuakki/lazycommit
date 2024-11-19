@@ -15,6 +15,9 @@ test: $(GOFILES)
 build: $(GOFILES)
 	$(GO) build -o $(EXEC) .
 
+docs: $(GOFILES)
+	doxygen -g doxygen/Doxyfile
+
 run: build
 	chmod +x ./$(EXEC); ./$(EXEC)
 
